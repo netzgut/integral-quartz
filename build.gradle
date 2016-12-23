@@ -1,0 +1,120 @@
+group 'net.netzgut.integral'
+version '0.0.1-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'nebula.provided-base'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:3.1.0'
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+    mavenLocal()
+}
+
+project.ext.versions = [
+    log4j: '1.2.17',
+    slf4j: '1.7.21',
+    tapestry: '5.4.1',
+    quartz: '2.2.1',
+    servlet: '2.5'
+]
+
+project.ext.moduleClasses = 'net.netzgut.integral.quartz.modules.QuartzModule'
+
+dependencies {
+    compile "org.slf4j:slf4j-log4j12:${versions.slf4j}"
+    compile "org.apache.tapestry:tapestry-core:${versions.tapestry}"
+    compile "org.quartz-scheduler:quartz:${versions.quartz}"
+    provided "javax.servlet:servlet-api:${versions.servlet}"
+}
+
+jar {
+    manifest { attributes 'Tapestry-Module-Classes': moduleClasses }
+}
+
+
+task wrapper(type: Wrapper) { gradleVersion = '3.2' }
+
+
+task pom {
+    doLast {
+        pom {
+            packaging = 'jar'
+            project {
+                inceptionYear '2016'
+                name rootProject.name
+                description 'A ReastEasy 3.0.19 replacement for org.tynamo.tapestry-resteasy'
+                url 'https://github.com/netzgut/integral-resteasy'
+                properties { 'project.build.sourceEncoding' 'UTF-8' }
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution 'repo'
+                    }
+                }
+                scm {
+                    url 'https://github.com/netzgut/integral-resteasy'
+                    connection 'scm:git:git://github.com/netzgut/integral-resteasy.git'
+                    developerConnection 'scm:git:git@github.com:netzgut/integral-resteasy.git'
+                }
+            }
+        }.withXml { xmlProvider ->
+            def plugins = xmlProvider.asNode().appendNode('build').appendNode('plugins')
+            def mavenCompilerPlugin = plugins.appendNode('plugin')
+            mavenCompilerPlugin.appendNode('artifactId').value = 'maven-compiler-plugin'
+            mavenCompilerPlugin.appendNode('version').value = '3.1'
+            def mavenCompilerPluginConfiguration = mavenCompilerPlugin.appendNode('configuration')
+            mavenCompilerPluginConfiguration.appendNode('source').value = sourceCompatibility
+            mavenCompilerPluginConfiguration.appendNode('target').value = targetCompatibility
+
+            def mavenSurefirePlugin = plugins.appendNode('plugin')
+            mavenSurefirePlugin.appendNode('artifactId').value = 'maven-surfire-plugin'
+            mavenSurefirePlugin.appendNode('version').value = '2.19.1'
+            mavenSurefirePlugin.appendNode('configuration')
+
+            def mavenJarPlugin = plugins.appendNode('plugin')
+            mavenJarPlugin.appendNode('artifactId').value = 'maven-jar-plugin'
+            def mavenJarPluginConfigurationManifest = mavenJarPlugin.appendNode('configuration').appendNode('archive').appendNode('manifestEntries')
+            mavenJarPluginConfigurationManifest.appendNode('Tapestry-Module-Classes').value = moduleClasses
+        }.writeTo('pom.xml')
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+	archives sourcesJar
+}
+
+uploadArchives {
+    // We need to set the variables if not present
+    ext.snapshot_repository = project.hasProperty('snapshot-repository') ? project.property('snapshot-repository') : ''
+    ext.snapshot_repository_username = project.hasProperty('snapshot-repository-username') ? project.property('snapshot-repository-username') : ''
+    ext.snapshot_repository_password = project.hasProperty('snapshot-repository-password') ? project.property('snapshot-repository-password') : ''
+
+    repositories {
+        mavenDeployer {
+            snapshotRepository(url: snapshot_repository) {
+                authentication(userName: snapshot_repository_username, password: snapshot_repository_password)
+            }
+        }
+    }
+}
