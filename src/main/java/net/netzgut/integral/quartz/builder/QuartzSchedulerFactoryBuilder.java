@@ -77,40 +77,105 @@ public class QuartzSchedulerFactoryBuilder {
     // # Configure Main Scheduler Properties
     // #============================================================================
 
+    /***
+     * <p>Can be any string, and the value has no meaning to the scheduler itself
+     * - but rather serves as a mechanism for client code to distinguish
+     * schedulers when multiple instances are used within the same program.</p>
+     * <p>If you are using the clustering features, you must use the same name for
+     * every instance in the cluster that is ‘logically’ the same Scheduler.</p>
+     */
     public QuartzSchedulerFactoryBuilder schedulerInstanceName(String instanceName) {
-        return set("org.quartz.scheduler.instanceName", instanceName);
+        return set(QuartzSchedulerFactoryConstants.SCHEDULER_INSTANCE_NAME, instanceName);
     }
 
+    /**
+     * <p>Can be any string, but must be unique for all schedulers working as if
+     * they are the same ‘logical’ Scheduler within a cluster. You may use the
+     * value “AUTO” as the instanceId if you wish the Id to be generated for you.</p>
+     * <p>Or the value “SYS_PROP” if you want the value to come from the system property
+     * <pre>org.quartz.scheduler.instanceId</pre>.</p>
+     */
     public QuartzSchedulerFactoryBuilder schedulerInstanceId(String instanceId) {
-        return set("org.quartz.scheduler.instanceId", instanceId);
+        return set(QuartzSchedulerFactoryConstants.SCHEDULER_INSTANCE_ID, instanceId);
     }
 
+    /**
+     * <p>The class name of the JobFactory to use.</p>
+     * <p>The default is <pre>org.quartz.simpl.SimpleJobFactory</pre>, you may like
+     * to try <pre>org.quartz.simpl.PropertySettingJobFactory</pre>.</p>
+     * <p>A JobFactory is responsible for producing instances of JobClasses.
+     * SimpleJobFactory simply calls newInstance() on the class.
+     * PropertySettingJobFactory does as well, but also reflectively sets the job’s
+     * bean properties using the contents of the SchedulerContext (since 2.0.2) and
+     * Job and Trigger JobDataMaps.</p>
+     */
     public QuartzSchedulerFactoryBuilder schedulerJobFactoryClass(Class<? extends JobFactory> jobFactoryClass) {
-        return set("org.quartz.scheduler.jobFactory.class", jobFactoryClass.getName());
+        return set(QuartzSchedulerFactoryConstants.SCHEDULER_JOB_FACTORY_CLASS, jobFactoryClass.getName());
+    }
+
+    /**
+     * <p>The amount of time in milliseconds that the scheduler will wait before
+     * re-queries for available triggers when the scheduler is otherwise idle.</p>
+     * <p>Normally you should not have to ‘tune’ this parameter, unless you’re
+     * using XA transactions, and are having problems with delayed firings of
+     * triggers that should fire immediately.</p>
+     * <p>Values less than 5000 ms are not recommended as it will cause excessive
+     * database querying. Values less than 1000 are not legal.</p>
+     */
+    public QuartzSchedulerFactoryBuilder schedulerIdleWaitTime(Duration idleWaitTime) {
+        if (idleWaitTime.toMillis() <= 1_000l) {
+            throw new IllegalArgumentException(String.format("Idle Wait Time must be greater than or equal 1000ms. Current: '%d'ms",
+                                                             idleWaitTime));
+        }
+
+        return set(QuartzSchedulerFactoryConstants.SCHEDULER_IDLE_WAIT_TIME, String.valueOf(idleWaitTime.toMillis()));
     }
 
     // #============================================================================
     // # Configure ThreadPool
     // #============================================================================
+
+    /**
+     * <p>Name of the ThreadPool implementation you wish to use.</p>
+     * <p>The threadpool that ships with Quartz is <pre>org.quartz.simpl.SimpleThreadPool</pre>,
+     * and should meet the needs of nearly every user. It has very simple behavior and
+     * is very well tested.</p>
+     * <p>It provides a fixed-size pool of threads that ‘live’ the lifetime of the Scheduler.</p>
+     */
     public QuartzSchedulerFactoryBuilder threadPoolClass(Class<? extends ThreadPool> threadPoolClass) {
-        return set("org.quartz.threadPool.class", threadPoolClass.getName());
+        if (threadPoolClass == null) {
+            throw new IllegalArgumentException("Thread Pool Class must not be null");
+        }
+        return set(QuartzSchedulerFactoryConstants.THREADPOOL_CLASS, threadPoolClass.getName());
     }
 
+    /**
+     * <p>This is the number of threads that are available for concurrent execution of jobs.</p>
+     * <p>Can be any positive integer, although you should realize that only numbers between 1 and 100 are very practical.</p>
+     * <p>If you only have a few jobs that fire a few times a day, then 1 thread is plenty!
+     * If you have tens of thousands of jobs, with many firing every minute, then you probably
+     * want a thread count more like 50 or 100 (this highly depends on the nature of
+     * the work that your jobs perform, and your systems resources!).</p>
+     */
     public QuartzSchedulerFactoryBuilder threadPoolThreadCount(int threadCount) {
         if (threadCount <= 0) {
             throw new IllegalArgumentException(String.format("Thread count (%d) must be greater than zero",
                                                              threadCount));
         }
-        return set("org.quartz.threadPool.threadCount", String.valueOf(threadCount));
+        return set(QuartzSchedulerFactoryConstants.THREADPOOL_THREAD_COUNT, String.valueOf(threadCount));
     }
 
+    /**
+     * Can be any int between Thread.MIN_PRIORITY (which is 1) and
+     * Thread.MAX_PRIORITY (which is 10). The default is Thread.NORM_PRIORITY (5).
+     */
     public QuartzSchedulerFactoryBuilder threadPoolThreadPriority(int threadPriority) {
         if (threadPriority < Thread.MIN_PRIORITY || threadPriority > Thread.MAX_PRIORITY) {
             throw new IllegalArgumentException(String.format("Thread priority has to be between %d and %d",
                                                              Thread.MIN_PRIORITY,
                                                              Thread.MAX_PRIORITY));
         }
-        return set("org.quartz.threadPool.threadPriority", String.valueOf(threadPriority));
+        return set(QuartzSchedulerFactoryConstants.THREADPOOL_THREAD_PRIORITY, String.valueOf(threadPriority));
     }
 
     // #============================================================================
@@ -118,41 +183,35 @@ public class QuartzSchedulerFactoryBuilder {
     // #============================================================================
 
     public QuartzSchedulerFactoryBuilder jobStoreMisfireThreshold(int misfireThreshold) {
-        return set("org.quartz.jobStore.misfireThreshold", String.valueOf(misfireThreshold));
+        return set(QuartzSchedulerFactoryConstants.JOBSTORE_MISFIRE_THRESHOLD, String.valueOf(misfireThreshold));
     }
 
     public QuartzSchedulerFactoryBuilder jobStoreClass(Class<? extends JobStore> jobStore) {
-        return set("org.quartz.jobStore.class", jobStore.getName());
+        return set(QuartzSchedulerFactoryConstants.JOBSTORE_CLASS, jobStore.getName());
     }
 
     public QuartzSchedulerFactoryBuilder jobStoreDriverDelegateClass(Class<? extends DriverDelegate> driverDelegateClass) {
-        return set("org.quartz.jobStore.driverDelegateClass", driverDelegateClass.getName());
+        return set(QuartzSchedulerFactoryConstants.JOBSTORE_DRIVER_DELEGATE_CLASS, driverDelegateClass.getName());
     }
 
     public QuartzSchedulerFactoryBuilder jobStoreUseProperties(boolean useProperties) {
-        return set("org.quartz.jobStore.useProperties", String.valueOf(useProperties));
+        return set(QuartzSchedulerFactoryConstants.JOBSTORE_USE_PROPERTIES, String.valueOf(useProperties));
     }
 
     public QuartzSchedulerFactoryBuilder jobStoreTablePrefix(String tablePrefix) {
-        return set("org.quartz.jobStore.tablePrefix", tablePrefix);
+        return set(QuartzSchedulerFactoryConstants.JOBSTORE_TABLE_PREFIX, tablePrefix);
     }
 
     public QuartzSchedulerFactoryBuilder jobStoreIsClustered(boolean isClustered) {
-        return set("org.quartz.jobStore.isClustered", String.valueOf(isClustered));
-    }
-
-    /**
-     * time, before a scheduler with no "job" searches for new jobs
-     */
-    public QuartzSchedulerFactoryBuilder schedulerIdleWaitTime(Duration idleWaitTime) {
-        return set("org.quartz.scheduler.idleWaitTime", String.valueOf(idleWaitTime.toMillis()));
+        return set(QuartzSchedulerFactoryConstants.JOBSTORE_IS_CLUSTERED, String.valueOf(isClustered));
     }
 
     /**
      * time, before a cluster node says "hello" (affects recovery of misfired jobs)
      */
     public QuartzSchedulerFactoryBuilder jobStoreClusterCheckinInterval(Duration clusterCheckinInterval) {
-        return set("org.quartz.jobStore.clusterCheckinInterval", String.valueOf(clusterCheckinInterval.toMillis()));
+        return set(QuartzSchedulerFactoryConstants.JOBSTORE_CLUSTER_CHECKIN_INTERVAL,
+                   String.valueOf(clusterCheckinInterval.toMillis()));
     }
 
     // TODO: check if we have to cleanup connection provider when adding more than one data source or after shutdown of cluster / app....?
@@ -163,7 +222,7 @@ public class QuartzSchedulerFactoryBuilder {
 
         String id = UUID.randomUUID().toString();
         DBConnectionManager.getInstance().addConnectionProvider(id, connectionProvider);
-        return set("org.quartz.jobStore.dataSource", id);
+        return set(QuartzSchedulerFactoryConstants.JOBSTORE_DATASOURCE, id);
     }
 
 }
