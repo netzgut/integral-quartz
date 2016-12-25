@@ -40,7 +40,7 @@ public class QuartzModule {
      */
     public static SchedulerFactory buildSchedulerFactory() {
         try {
-            return new QuartzSchedulerFactoryBuilder().withRamDefaultSettings().build();
+            return QuartzSchedulerFactoryBuilder.withRamDefaultSettings().build();
         }
         catch (SchedulerException e) {
             throw new RuntimeException(e);
@@ -74,9 +74,9 @@ public class QuartzModule {
     // vvvvv PRIVATE HELPERS vvvvv
 
     private static void handleSchedulerException(Scheduler scheduler, SchedulerException e) {
-        String msg = String.format("Exception ocurred while shutting down scheduler '%s'.", scheduler);
-        msg += " Ignoring, since registry is going to shut down.";
-
+        String msg =
+            String.format("Exception ocurred while shutting down scheduler '%s'. Ignoring, since registry is going to shut down.",
+                          scheduler);
         log.warn(msg, e);
     }
 

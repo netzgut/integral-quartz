@@ -29,9 +29,9 @@ public class MycreonQuartzSchedulingBundle implements JobSchedulingBundle {
 
     @Override
     public JobDetail getJobDetail() {
-        String name = this.job.getName();
-        JobDetail jobDetail = JobBuilder.newJob(MycreonQuartzJobExecutor.class).withIdentity(name).build();
-        jobDetail.getJobDataMap().put(MycreonQuartzJobExecutor.JOB_CLAZZNAME_DATAMAP_KEY, this.job.getName());
+        String jobName = this.job.getName();
+        JobDetail jobDetail = JobBuilder.newJob(MycreonQuartzJobExecutor.class).withIdentity(jobName).build();
+        jobDetail.getJobDataMap().put(MycreonQuartzJobExecutor.JOB_CLAZZNAME_DATAMAP_KEY, jobName);
         return jobDetail;
     }
 

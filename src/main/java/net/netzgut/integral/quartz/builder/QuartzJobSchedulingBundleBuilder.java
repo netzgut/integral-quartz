@@ -31,28 +31,32 @@ public class QuartzJobSchedulingBundleBuilder {
     }
 
     public QuartzJobSchedulingBundleBuilder triggerHourly(int hours) {
-        this.triggerBuilder = () -> TriggerBuilder.newTrigger() //
-                                                  .withIdentity(this.jobClass.getName() + "triggerHourly" + hours)
-                                                  .startAt(this.triggerStartDate) //
-                                                  .withSchedule(SimpleScheduleBuilder.repeatHourlyForever(hours)) //
-                                                  .build();
+        this.triggerBuilder =
+            () -> TriggerBuilder.newTrigger() //
+                                .withIdentity(buildIdentity(this.jobClass, "triggerHourly", hours))
+                                .startAt(this.triggerStartDate) //
+                                .withSchedule(SimpleScheduleBuilder.repeatHourlyForever(hours)).build();
         return this;
     }
 
     public QuartzJobSchedulingBundleBuilder triggerMinutely(int minutes) {
         this.triggerBuilder = () -> TriggerBuilder.newTrigger() //
-                                                  .withIdentity(this.jobClass.getName() + "triggerMinutely" + minutes)
+                                                  .withIdentity(buildIdentity(this.jobClass,
+                                                                              "triggerMinutely",
+                                                                              minutes))
                                                   .startAt(this.triggerStartDate) //
-                                                  .withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(minutes)) //
+                                                  .withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(minutes))
                                                   .build();
         return this;
     }
 
     public QuartzJobSchedulingBundleBuilder triggerSecondly(int seconds) {
         this.triggerBuilder = () -> TriggerBuilder.newTrigger() //
-                                                  .withIdentity(this.jobClass.getName() + "triggerSecondly" + seconds)
+                                                  .withIdentity(buildIdentity(this.jobClass,
+                                                                              "triggerSecondly",
+                                                                              seconds))
                                                   .startAt(this.triggerStartDate) //
-                                                  .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(seconds)) //
+                                                  .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(seconds))
                                                   .build();
         return this;
     }
@@ -91,4 +95,9 @@ public class QuartzJobSchedulingBundleBuilder {
                                                             this.triggerBuilder.get(),
                                                             this.triggerComparator));
     }
+
+    private String buildIdentity(Class<? extends MycreonQuartzJob> jobClass, String type, int value) {
+        return String.format("%s:%s:%d", jobClass.getName(), type, value);
+    }
+
 }
