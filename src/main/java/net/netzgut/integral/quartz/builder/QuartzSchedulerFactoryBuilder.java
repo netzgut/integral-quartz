@@ -53,18 +53,18 @@ public class QuartzSchedulerFactoryBuilder {
         return this;
     }
 
-    public QuartzSchedulerFactoryBuilder withRamDefaultSettings() {
-        return schedulerInstanceName("MasterScheduler").schedulerInstanceId("AUTO")
-                                                       .schedulerJobFactoryClass(org.quartz.simpl.SimpleJobFactory.class)
-                                                       .threadPoolClass(org.quartz.simpl.SimpleThreadPool.class)
-                                                       .threadPoolThreadCount(3)
-                                                       .threadPoolThreadPriority(Thread.NORM_PRIORITY)
-                                                       .jobStoreMisfireThreshold(60_000)
-                                                       .jobStoreClass(org.quartz.simpl.RAMJobStore.class);
+    public static QuartzSchedulerFactoryBuilder withRamDefaultSettings() {
+        return new QuartzSchedulerFactoryBuilder().schedulerInstanceName("MasterScheduler").schedulerInstanceId("AUTO")
+                                                  .schedulerJobFactoryClass(org.quartz.simpl.SimpleJobFactory.class)
+                                                  .threadPoolClass(org.quartz.simpl.SimpleThreadPool.class)
+                                                  .threadPoolThreadCount(3)
+                                                  .threadPoolThreadPriority(Thread.NORM_PRIORITY)
+                                                  .jobStoreMisfireThreshold(60_000)
+                                                  .jobStoreClass(org.quartz.simpl.RAMJobStore.class);
 
     }
 
-    public QuartzSchedulerFactoryBuilder withJdbcDefaultSettings(ConnectionProvider connectionProvider) {
+    public static QuartzSchedulerFactoryBuilder withJdbcDefaultSettings(ConnectionProvider connectionProvider) {
         return withRamDefaultSettings().jobStoreClass(org.quartz.impl.jdbcjobstore.JobStoreTX.class)
                                        .jobStoreDriverDelegateClass(org.quartz.impl.jdbcjobstore.StdJDBCDelegate.class)
                                        .jobStoreUseProperties(true).jobStoreTablePrefix("QRTZ_")
