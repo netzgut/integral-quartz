@@ -3,7 +3,6 @@ package net.netzgut.integral.internal.quartz;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.apache.tapestry5.ioc.ObjectLocator;
@@ -19,6 +18,7 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.netzgut.integral.internal.quartz.utils.SchedulerUtils;
 import net.netzgut.integral.quartz.AbstractTriggerListener;
 import net.netzgut.integral.quartz.JobSchedulingBundle;
 import net.netzgut.integral.quartz.QuartzConstants;
@@ -39,15 +39,6 @@ public class QuartzSchedulerManagerImpl implements QuartzSchedulerManager {
             // get all existing jobs
             Set<JobKey> existingJobs = getScheduler().getJobKeys(GroupMatcher.jobGroupStartsWith(""));
 
-            Consumer<JobKey> deleteJobKey = (jobKey) -> {
-                try {
-                    getScheduler().deleteJob(jobKey);
-                }
-                catch (SchedulerException e) {
-                    e.printStackTrace();
-                }
-            };
-
             // formatter: off
             Set<JobKey> incomingJobKeys =
                 jobSchedulingBundles
@@ -60,7 +51,7 @@ public class QuartzSchedulerManagerImpl implements QuartzSchedulerManager {
             existingJobs
                 .stream()
                 .filter(jobKey -> incomingJobKeys.contains(jobKey) == false)
-                .forEach(deleteJobKey);
+                .forEach(jobKey -> SchedulerUtils.deleteJobQuietly(getScheduler(), jobKey));
             // formatter: on
 
             // replace different and add new jobs
@@ -83,7 +74,7 @@ public class QuartzSchedulerManagerImpl implements QuartzSchedulerManager {
 
                         if (bundle.getTriggerComparator().apply(existingTrigger.get(0), bundle.getTrigger()) == false) {
                             found = false;
-                            deleteJobKey.accept(jobKey);
+                            SchedulerUtils.deleteJobQuietly(getScheduler(), jobKey);
                         }
 
                     }
