@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.netzgut.integral.quartz.modules;
+package net.netzgut.integral.quartz;
 
 import java.util.List;
 
@@ -30,9 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import net.netzgut.integral.internal.quartz.IntegralQuartzJobContextImpl;
 import net.netzgut.integral.internal.quartz.QuartzSchedulerManagerImpl;
-import net.netzgut.integral.quartz.IntegralQuartzJobContext;
-import net.netzgut.integral.quartz.JobSchedulingBundle;
-import net.netzgut.integral.quartz.QuartzSchedulerManager;
 import net.netzgut.integral.quartz.builder.QuartzSchedulerFactoryBuilder;
 
 public class QuartzModule {

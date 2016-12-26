@@ -8,7 +8,6 @@ import org.quartz.Trigger;
 
 import net.netzgut.integral.quartz.IntegralQuartzJob;
 import net.netzgut.integral.quartz.JobSchedulingBundle;
-import net.netzgut.integral.quartz.QuartzConstants;
 
 public class IntegralQuartzSchedulingBundle implements JobSchedulingBundle {
 
@@ -33,7 +32,7 @@ public class IntegralQuartzSchedulingBundle implements JobSchedulingBundle {
     public JobDetail getJobDetail() {
         String jobName = this.job.getName();
         JobDetail jobDetail = JobBuilder.newJob(IntegralQuartzJobExecutor.class).withIdentity(jobName).build();
-        jobDetail.getJobDataMap().put(QuartzConstants.JOB_CLAZZNAME_DATAMAP_KEY, jobName);
+        jobDetail.getJobDataMap().put(InternalQuartzConstants.JOB_CLAZZNAME_DATAMAP_KEY, jobName);
         return jobDetail;
     }
 

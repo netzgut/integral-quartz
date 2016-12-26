@@ -40,7 +40,9 @@ Contribute to QuartzSchedulerManager, use QuartzJobSchedulingBundleBuilder to bu
                                                .build(configuration);
 
     }```
-    
+
+Quartz supports multiple triggers per Job. We currently only support one trigger per job.
+
 ### Scheduler configuration
 
 Out of the box integral-quartz comes with an RAM-based scheduler with reasonable default settings. If you want to use
@@ -90,14 +92,21 @@ All jobs are non-concurrent. If a job takes longer than the next firetime, it wi
 
 TODO: check if overlapping triggers are skipped or delayed. 
 
+### Adding / Updating / Removing jobs and triggers
 
-- note on failing tasks / repeat 
-- how to remove / update jobs with different triggers
-- start date
-- one job <-> one trigger
-- tests
-- nonconcurrent
- MDC.put("requestedUrl", jobClazz.getName());     MDC.clear();
+If you use RAM store, the scheduler will build the jobs and triggers every time the registry starts.
+
+If you use JDBC store in clustered mode, the Scheduler will on startup:
+ - remove all jobs from JobStore that are not configured any more.
+ - remove all jobs from JobStore with a different trigger (see triggerComparator in QuartzJobSchedulingBundleBuilder)
+ - add all jobs that are not in the JobStore
+So if you want to change a job, you have to change the jobKey or the triggerKey and it will be removed and re-inserted
+
+### Log4J, RequestResponse
+
+ - TODO...
+ - MDC.put("requestedUrl", jobClazz.getName());
+ - MDC.clear();
 
 ## Gradle task uploadArchives
 

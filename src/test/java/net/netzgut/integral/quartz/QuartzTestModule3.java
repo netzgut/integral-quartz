@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import net.netzgut.integral.quartz.builder.QuartzJobSchedulingBundleBuilder;
 import net.netzgut.integral.quartz.builder.QuartzSchedulerFactoryBuilder;
-import net.netzgut.integral.quartz.modules.QuartzModule;
 
 @ImportModule(QuartzModule.class)
 public class QuartzTestModule3 {

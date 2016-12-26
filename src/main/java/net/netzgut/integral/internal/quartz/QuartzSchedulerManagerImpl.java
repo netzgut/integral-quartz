@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import net.netzgut.integral.internal.quartz.utils.SchedulerUtils;
 import net.netzgut.integral.quartz.JobSchedulingBundle;
-import net.netzgut.integral.quartz.QuartzConstants;
 import net.netzgut.integral.quartz.QuartzSchedulerManager;
 import net.netzgut.integral.quartz.listener.AbstractTriggerListener;
 
@@ -91,7 +90,7 @@ public class QuartzSchedulerManagerImpl implements QuartzSchedulerManager {
 
                               @Override
                               public void triggerFired(Trigger trigger, JobExecutionContext jobExecutionContext) {
-                                  jobExecutionContext.put(QuartzConstants.OBJECT_LOCATOR_JOB_DATA_MAP_KEY,
+                                  jobExecutionContext.put(InternalQuartzConstants.OBJECT_LOCATOR_JOB_DATA_MAP_KEY,
                                                           objectLocator);
                               }
                           });

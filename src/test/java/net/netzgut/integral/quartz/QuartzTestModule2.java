@@ -7,7 +7,6 @@ import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.ImportModule;
 
 import net.netzgut.integral.quartz.builder.QuartzJobSchedulingBundleBuilder;
-import net.netzgut.integral.quartz.modules.QuartzModule;
 
 @ImportModule(QuartzModule.class)
 public class QuartzTestModule2 {

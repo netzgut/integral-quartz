@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import net.netzgut.integral.quartz.IntegralQuartzJob;
 import net.netzgut.integral.quartz.IntegralQuartzJobContext;
-import net.netzgut.integral.quartz.QuartzConstants;
 
 @DisallowConcurrentExecution
 public class IntegralQuartzJobExecutor implements Job {
@@ -69,14 +68,14 @@ public class IntegralQuartzJobExecutor implements Job {
     private Class<IntegralQuartzJob> loadJobClass(JobExecutionContext context) throws ClassNotFoundException {
         Class<IntegralQuartzJob> jobClazz;
         String clazzName =
-            (String) context.getJobDetail().getJobDataMap().get(QuartzConstants.JOB_CLAZZNAME_DATAMAP_KEY);
+            (String) context.getJobDetail().getJobDataMap().get(InternalQuartzConstants.JOB_CLAZZNAME_DATAMAP_KEY);
         log.debug("loading job class {}", clazzName);
         jobClazz = (Class<IntegralQuartzJob>) Thread.currentThread().getContextClassLoader().loadClass(clazzName);
         return jobClazz;
     }
 
     private ObjectLocator retrieveObjectLocator(JobExecutionContext context) {
-        ObjectLocator registry = (ObjectLocator) context.get(QuartzConstants.OBJECT_LOCATOR_JOB_DATA_MAP_KEY);
+        ObjectLocator registry = (ObjectLocator) context.get(InternalQuartzConstants.OBJECT_LOCATOR_JOB_DATA_MAP_KEY);
         return registry;
     }
 
