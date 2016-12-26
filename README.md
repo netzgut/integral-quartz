@@ -39,7 +39,8 @@ Contribute to QuartzSchedulerManager, use QuartzJobSchedulingBundleBuilder to bu
                                                .triggerSecondly(1) //
                                                .build(configuration);
 
-    }```
+    }
+```
 
 Quartz supports multiple triggers per Job. We currently only support one trigger per job.
 
