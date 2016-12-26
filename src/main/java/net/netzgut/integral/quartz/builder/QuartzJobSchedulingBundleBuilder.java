@@ -5,9 +5,12 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import org.apache.tapestry5.ioc.OrderedConfiguration;
+import org.quartz.CronScheduleBuilder;
 import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
+import org.quartz.TriggerKey;
+import org.quartz.impl.triggers.CronTriggerImpl;
 
 import net.netzgut.integral.internal.quartz.IntegralQuartzSchedulingBundle;
 import net.netzgut.integral.quartz.IntegralQuartzJob;
@@ -15,7 +18,7 @@ import net.netzgut.integral.quartz.JobSchedulingBundle;
 
 public class QuartzJobSchedulingBundleBuilder {
 
-    private Class<? extends IntegralQuartzJob>     jobClass;
+    private Class<? extends IntegralQuartzJob>    jobClass;
     private Supplier<Trigger>                     triggerBuilder;
     private Date                                  triggerStartDate = new Date();
     private BiFunction<Trigger, Trigger, Boolean> triggerComparator;
@@ -30,13 +33,22 @@ public class QuartzJobSchedulingBundleBuilder {
         return this;
     }
 
+    public QuartzJobSchedulingBundleBuilder triggerHourly() {
+        return triggerHourly(1);
+    }
+
     public QuartzJobSchedulingBundleBuilder triggerHourly(int hours) {
-        this.triggerBuilder =
-            () -> TriggerBuilder.newTrigger() //
-                                .withIdentity(buildIdentity(this.jobClass, "triggerHourly", hours))
-                                .startAt(this.triggerStartDate) //
-                                .withSchedule(SimpleScheduleBuilder.repeatHourlyForever(hours)).build();
+        this.triggerBuilder = () -> TriggerBuilder.newTrigger() //
+                                                  .withIdentity(buildIdentity(this.jobClass, "triggerHourly", hours))
+                                                  .startAt(this.triggerStartDate) //
+                                                  .withSchedule(SimpleScheduleBuilder.repeatHourlyForever(hours)
+                                                                                     .withMisfireHandlingInstructionFireNow())
+                                                  .build();
         return this;
+    }
+
+    public QuartzJobSchedulingBundleBuilder triggerMinutely() {
+        return triggerMinutely(1);
     }
 
     public QuartzJobSchedulingBundleBuilder triggerMinutely(int minutes) {
@@ -45,7 +57,8 @@ public class QuartzJobSchedulingBundleBuilder {
                                                                               "triggerMinutely",
                                                                               minutes))
                                                   .startAt(this.triggerStartDate) //
-                                                  .withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(minutes))
+                                                  .withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(minutes)
+                                                                                     .withMisfireHandlingInstructionFireNow())
                                                   .build();
         return this;
     }
@@ -56,8 +69,19 @@ public class QuartzJobSchedulingBundleBuilder {
                                                                               "triggerSecondly",
                                                                               seconds))
                                                   .startAt(this.triggerStartDate) //
-                                                  .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(seconds))
+                                                  .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(seconds)
+                                                                                     .withMisfireHandlingInstructionFireNow())
                                                   .build();
+        return this;
+    }
+
+    public QuartzJobSchedulingBundleBuilder trigger(CronScheduleBuilder cronScheduleBuilder) {
+        this.triggerBuilder = () -> {
+            CronTriggerImpl trigger = (CronTriggerImpl) cronScheduleBuilder.build();
+            trigger.setKey(new TriggerKey(buildIdentity(this.jobClass, trigger.getCronExpression(), 0)));
+            return trigger;
+        };
+
         return this;
     }
 
@@ -92,8 +116,8 @@ public class QuartzJobSchedulingBundleBuilder {
         }
         configuration.add(this.jobClass.getName(),
                           new IntegralQuartzSchedulingBundle(this.jobClass,
-                                                            this.triggerBuilder.get(),
-                                                            this.triggerComparator));
+                                                             this.triggerBuilder.get(),
+                                                             this.triggerComparator));
     }
 
     private String buildIdentity(Class<? extends IntegralQuartzJob> jobClass, String type, int value) {
