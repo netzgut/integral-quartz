@@ -25,10 +25,16 @@ public class QuartzSchedulerFactoryBuilder {
         super();
     }
 
-    public SchedulerFactory build() throws SchedulerException {
-        Properties props = new Properties();
-        props.putAll(this.settings);
-        return new StdSchedulerFactory(props);
+    public SchedulerFactory build() {
+        try {
+            Properties props = new Properties();
+            props.putAll(this.settings);
+            return new StdSchedulerFactory(props);
+        }
+        catch (SchedulerException ex) {
+            throw new RuntimeException(ex);
+
+        }
     }
 
     /**
@@ -60,7 +66,8 @@ public class QuartzSchedulerFactoryBuilder {
                                                   .threadPoolThreadCount(3)
                                                   .threadPoolThreadPriority(Thread.NORM_PRIORITY)
                                                   .jobStoreMisfireThreshold(60_000)
-                                                  .jobStoreClass(org.quartz.simpl.RAMJobStore.class);
+                                                  .jobStoreClass(org.quartz.simpl.RAMJobStore.class)
+                                                  .skipUpdateCheck(true);
 
     }
 
@@ -71,6 +78,10 @@ public class QuartzSchedulerFactoryBuilder {
                                        .jobStoreIsClustered(true).schedulerIdleWaitTime(Duration.ofMinutes(1))
                                        .jobStoreClusterCheckinInterval(Duration.ofMinutes(1))
                                        .jobStoreConnectionProvider(connectionProvider);
+    }
+
+    public QuartzSchedulerFactoryBuilder skipUpdateCheck(boolean skipUpdateCheck) {
+        return set(QuartzSchedulerFactoryConstants.SKIP_UPDATE_CHECK, String.valueOf(skipUpdateCheck));
     }
 
     // #============================================================================

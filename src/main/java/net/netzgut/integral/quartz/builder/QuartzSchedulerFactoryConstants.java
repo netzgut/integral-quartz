@@ -2,6 +2,8 @@ package net.netzgut.integral.quartz.builder;
 
 public class QuartzSchedulerFactoryConstants {
 
+    public static final String SKIP_UPDATE_CHECK                 = "org.quartz.scheduler.skipUpdateCheck";
+
     public static final String SCHEDULER_INSTANCE_NAME           = "org.quartz.scheduler.instanceName";
     public static final String SCHEDULER_INSTANCE_ID             = "org.quartz.scheduler.instanceId";
     public static final String SCHEDULER_JOB_FACTORY_CLASS       = "org.quartz.scheduler.jobFactory.class";
@@ -19,4 +21,5 @@ public class QuartzSchedulerFactoryConstants {
     public static final String JOBSTORE_IS_CLUSTERED             = "org.quartz.jobStore.isClustered";
     public static final String JOBSTORE_CLUSTER_CHECKIN_INTERVAL = "org.quartz.jobStore.clusterCheckinInterval";
     public static final String JOBSTORE_DATASOURCE               = "org.quartz.jobStore.dataSource";
+
 }

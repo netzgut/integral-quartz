@@ -26,6 +26,14 @@ dependencies {
 
 Now just import `QuartzModule.class` in your app module.. TODO: How to use this?
 
+- add job
+- configuration
+- note on failing tasks / repeat 
+- how to remove / update jobs with different triggers
+- start date
+- one job <-> one trigger
+- tests
+ MDC.put("requestedUrl", jobClazz.getName());     MDC.clear();
 
 ## Gradle task uploadArchives
 

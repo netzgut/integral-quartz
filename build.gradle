@@ -26,20 +26,27 @@ repositories {
 }
 
 project.ext.versions = [
-    log4j: '1.2.17',
-    slf4j: '1.7.21',
+    slf4j: '1.7.22',
     tapestry: '5.4.1',
     quartz: '2.2.1',
-    servlet: '2.5'
+    // provided
+    servlet: '2.5',
+    // test
+    log4j: '1.2.17',
+    hsqldb: '2.3.4',
+    testng: '6.9.12'
 ]
 
 project.ext.moduleClasses = 'net.netzgut.integral.quartz.modules.QuartzModule'
 
 dependencies {
-    compile "org.slf4j:slf4j-log4j12:${versions.slf4j}"
-    compile "org.apache.tapestry:tapestry-core:${versions.tapestry}"
+    compile "org.slf4j:slf4j-api:${versions.slf4j}"
+    compile "org.apache.tapestry:tapestry-ioc:${versions.tapestry}"
     compile "org.quartz-scheduler:quartz:${versions.quartz}"
     provided "javax.servlet:servlet-api:${versions.servlet}"
+    testCompile "org.slf4j:slf4j-log4j12:${versions.slf4j}"
+    testCompile group: 'org.hsqldb', name: 'hsqldb', version: versions.hsqldb
+    testCompile "org.testng:testng:${versions.testng}"
 }
 
 jar {
@@ -104,6 +111,9 @@ artifacts {
 	archives sourcesJar
 }
 
+test {
+    useTestNG()
+}
 uploadArchives {
     // We need to set the variables if not present
     ext.snapshot_repository = project.hasProperty('snapshot-repository') ? project.property('snapshot-repository') : ''

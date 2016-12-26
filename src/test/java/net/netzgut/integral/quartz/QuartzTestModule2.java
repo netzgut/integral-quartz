@@ -10,15 +10,15 @@ import net.netzgut.integral.quartz.builder.QuartzJobSchedulingBundleBuilder;
 import net.netzgut.integral.quartz.modules.QuartzModule;
 
 @ImportModule(QuartzModule.class)
-public class QuartzTestModule {
+public class QuartzTestModule2 {
 
     @Contribute(QuartzSchedulerManager.class)
     public static void contributeQuartzSchedulerManager(OrderedConfiguration<JobSchedulingBundle> configuration) {
 
         new QuartzJobSchedulingBundleBuilder() //
-                                               .jobClass(TestJob.class) //
+                                               .jobClass(TestJob2.class) //
                                                .startDate(new Date()) //
-                                               .triggerSecondly(1) //
+                                               .triggerSecondly(5) //
                                                .build(configuration);
 
     }

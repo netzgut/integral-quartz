@@ -4,13 +4,11 @@ import java.util.Date;
 
 import org.quartz.SchedulerException;
 
-import net.netzgut.integral.quartz.tapestry.MycreonQuartzJob;
-
-public class TestJob implements MycreonQuartzJob {
+public class TestJob1 implements IntegralQuartzJob {
 
     private final QuartzSchedulerManager manager;
 
-    public TestJob(QuartzSchedulerManager manager) {
+    public TestJob1(QuartzSchedulerManager manager) {
         super();
         this.manager = manager;
     }

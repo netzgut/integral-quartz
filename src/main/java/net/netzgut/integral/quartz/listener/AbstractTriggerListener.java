@@ -1,4 +1,4 @@
-package net.netzgut.integral.quartz;
+package net.netzgut.integral.quartz.listener;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.Trigger;

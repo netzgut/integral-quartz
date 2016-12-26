@@ -9,13 +9,13 @@ import org.quartz.SimpleScheduleBuilder;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 
+import net.netzgut.integral.internal.quartz.IntegralQuartzSchedulingBundle;
+import net.netzgut.integral.quartz.IntegralQuartzJob;
 import net.netzgut.integral.quartz.JobSchedulingBundle;
-import net.netzgut.integral.quartz.tapestry.MycreonQuartzJob;
-import net.netzgut.integral.quartz.tapestry.MycreonQuartzSchedulingBundle;
 
 public class QuartzJobSchedulingBundleBuilder {
 
-    private Class<? extends MycreonQuartzJob>     jobClass;
+    private Class<? extends IntegralQuartzJob>     jobClass;
     private Supplier<Trigger>                     triggerBuilder;
     private Date                                  triggerStartDate = new Date();
     private BiFunction<Trigger, Trigger, Boolean> triggerComparator;
@@ -25,7 +25,7 @@ public class QuartzJobSchedulingBundleBuilder {
         simpleTriggerKeyDiff(); // default mode
     }
 
-    public QuartzJobSchedulingBundleBuilder jobClass(Class<? extends MycreonQuartzJob> jobClass) {
+    public QuartzJobSchedulingBundleBuilder jobClass(Class<? extends IntegralQuartzJob> jobClass) {
         this.jobClass = jobClass;
         return this;
     }
@@ -84,19 +84,19 @@ public class QuartzJobSchedulingBundleBuilder {
     public void build(OrderedConfiguration<JobSchedulingBundle> configuration) {
         if (this.jobClass == null) {
             throw new RuntimeException("Missing job class when building "
-                                       + MycreonQuartzSchedulingBundle.class.getName());
+                                       + IntegralQuartzSchedulingBundle.class.getName());
         }
         if (this.triggerBuilder == null) {
             throw new RuntimeException("Missing trigger when building "
-                                       + MycreonQuartzSchedulingBundle.class.getName());
+                                       + IntegralQuartzSchedulingBundle.class.getName());
         }
         configuration.add(this.jobClass.getName(),
-                          new MycreonQuartzSchedulingBundle(this.jobClass,
+                          new IntegralQuartzSchedulingBundle(this.jobClass,
                                                             this.triggerBuilder.get(),
                                                             this.triggerComparator));
     }
 
-    private String buildIdentity(Class<? extends MycreonQuartzJob> jobClass, String type, int value) {
+    private String buildIdentity(Class<? extends IntegralQuartzJob> jobClass, String type, int value) {
         return String.format("%s:%s:%d", jobClass.getName(), type, value);
     }
 
