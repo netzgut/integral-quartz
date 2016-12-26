@@ -5,19 +5,15 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
+import org.testng.annotations.Test;
 
 public class QuartzTest4 {
 
-    public static void main(String[] args) {
-        System.out.println("starting CLUSTER test");
+    @Test(timeOut = 10 * 1000)
+    public void testConcurrentJobs() {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.INFO);
         Logger.getLogger("net.netzgut").setLevel(Level.DEBUG);
-        new QuartzTest4().start();
-    }
-
-    private synchronized void start() {
-
         try {
             Registry registry = startRegistry();
             Thread.sleep(5000);

@@ -21,18 +21,82 @@ respositories {
 dependencies {
     compile "net.netzgut.integral:integral-quartz:0.0.1"
 }
-
 ```
 
-Now just import `QuartzModule.class` in your app module.. TODO: How to use this?
+### Add job
 
-- add job
-- configuration
+Your job has to implement IntegralQuartzJob. IntegralQuartzJob is like a runnable.
+
+Contribute to QuartzSchedulerManager, use QuartzJobSchedulingBundleBuilder to build trigger and add to configuration:
+
+```
+    @Contribute(QuartzSchedulerManager.class)
+    public static void contributeQuartzSchedulerManager(OrderedConfiguration<JobSchedulingBundle> configuration) {
+
+        new QuartzJobSchedulingBundleBuilder() //
+                                               .jobClass(TestJob1.class) //
+                                               .startDate(new Date()) //
+                                               .triggerSecondly(1) //
+                                               .build(configuration);
+
+    }```
+    
+### Scheduler configuration
+
+Out of the box integral-quartz comes with an RAM-based scheduler with reasonable default settings. If you want to use
+quartz in a clustered environemt i.e. with a database JobStore, contribute a service override for the SchedulerFactory
+service.
+
+```
+    @Contribute(ServiceOverride.class)
+    public static void contributeServiceOverride(@SuppressWarnings("rawtypes") MappedConfiguration<Class, Object> conf,
+                                                 @Local SchedulerFactory schedulerFactory) {
+        conf.add(SchedulerFactory.class, schedulerFactory);
+    }
+
+    public static SchedulerFactory buildTestClusterSchedulerFactory() {
+        ConnectionProvider connectionProvider = new ConnectionProvider() {
+
+            @Override
+            public void shutdown() throws SQLException {
+                // NOOP
+            }
+
+            @Override
+            public void initialize() throws SQLException {
+                // NOOP
+            }
+
+            @Override
+            public Connection getConnection() throws SQLException {
+                Connection c = DriverManager.getConnection("jdbc:hsqldb:mem:mymemdb", "SA", "");
+                return c;
+            }
+        };
+
+        return QuartzSchedulerFactoryBuilder.withJdbcDefaultSettings(connectionProvider).build();
+    }
+```
+
+See QuartzSchedulerFactoryBuilder for more options.
+
+### Failing tasks
+
+When a task fails, it will not refire until the next scheduled trigger fires.
+
+### Nonconcurrent
+
+All jobs are non-concurrent. If a job takes longer than the next firetime, it will not run concurrently.
+
+TODO: check if overlapping triggers are skipped or delayed. 
+
+
 - note on failing tasks / repeat 
 - how to remove / update jobs with different triggers
 - start date
 - one job <-> one trigger
 - tests
+- nonconcurrent
  MDC.put("requestedUrl", jobClazz.getName());     MDC.clear();
 
 ## Gradle task uploadArchives

@@ -14,11 +14,11 @@ import net.netzgut.integral.quartz.IntegralQuartzJobContext;
 import net.netzgut.integral.quartz.QuartzConstants;
 
 @DisallowConcurrentExecution
-public class MycreonQuartzJobExecutor implements Job {
+public class IntegralQuartzJobExecutor implements Job {
 
-    private static final Logger log = LoggerFactory.getLogger(MycreonQuartzJobExecutor.class);
+    private static final Logger log = LoggerFactory.getLogger(IntegralQuartzJobExecutor.class);
 
-    public MycreonQuartzJobExecutor() {
+    public IntegralQuartzJobExecutor() {
         super();
     }
 
@@ -57,6 +57,9 @@ public class MycreonQuartzJobExecutor implements Job {
         }
         finally {
             log.debug("cleanup after job execution: '{}'", jobClazz);
+
+            // resetting integral job context is kind of redundant since the PerthreadManager cleanup resets the
+            // service
             integralJobContext.removeRunningJob();
             objectLocator.getService(PerthreadManager.class).cleanup();
         }

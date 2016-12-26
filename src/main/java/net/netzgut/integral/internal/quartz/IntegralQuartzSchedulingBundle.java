@@ -32,7 +32,7 @@ public class IntegralQuartzSchedulingBundle implements JobSchedulingBundle {
     @Override
     public JobDetail getJobDetail() {
         String jobName = this.job.getName();
-        JobDetail jobDetail = JobBuilder.newJob(MycreonQuartzJobExecutor.class).withIdentity(jobName).build();
+        JobDetail jobDetail = JobBuilder.newJob(IntegralQuartzJobExecutor.class).withIdentity(jobName).build();
         jobDetail.getJobDataMap().put(QuartzConstants.JOB_CLAZZNAME_DATAMAP_KEY, jobName);
         return jobDetail;
     }

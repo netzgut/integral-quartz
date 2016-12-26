@@ -8,6 +8,7 @@ src/main/webapp/WEB-INF/tmp
 .project
 .classpath
 .recommenders/
+test-output/
 
 # Gradle
 .gradle

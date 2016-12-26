@@ -14,17 +14,34 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
+import org.testng.annotations.Test;
 
 public class QuartzTest3 {
 
-    public static void main(String[] args) {
-
-        System.out.println("starting CLUSTER test");
+    @Test(timeOut = 20 * 1000)
+    public void testCluster() {
         BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.INFO);
         Logger.getLogger("net.netzgut").setLevel(Level.DEBUG);
         initDb();
-        new QuartzTest3().start();
+        try {
+            Registry registry = startRegistry();
+            Thread.sleep(5000);
+            registry.shutdown();
+            registry = startRegistry();
+            Thread.sleep(5000);
+            registry.shutdown();
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Registry startRegistry() {
+        RegistryBuilder builder = new RegistryBuilder().add(QuartzTestModule3.class);
+        Registry registry = builder.build();
+        registry.performRegistryStartup();
+        return registry;
     }
 
     private static void initDb() {
@@ -55,28 +72,6 @@ public class QuartzTest3 {
         catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private synchronized void start() {
-
-        try {
-            Registry registry = startRegistry();
-            Thread.sleep(5000);
-            registry.shutdown();
-            registry = startRegistry();
-            Thread.sleep(5000);
-            registry.shutdown();
-        }
-        catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Registry startRegistry() {
-        RegistryBuilder builder = new RegistryBuilder().add(QuartzTestModule3.class);
-        Registry registry = builder.build();
-        registry.performRegistryStartup();
-        return registry;
     }
 
 }

@@ -6,6 +6,8 @@ import org.quartz.SchedulerException;
 
 public class TestJob1 implements IntegralQuartzJob {
 
+    public static boolean                RUN = false;
+
     private final QuartzSchedulerManager manager;
 
     public TestJob1(QuartzSchedulerManager manager) {
@@ -20,6 +22,7 @@ public class TestJob1 implements IntegralQuartzJob {
                                + new Date()
                                + " and quartz is started: "
                                + this.manager.getScheduler().isStarted());
+            RUN = true;
         }
         catch (SchedulerException e) {
             e.printStackTrace();

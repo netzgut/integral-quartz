@@ -8,6 +8,7 @@ public class TestJob2 implements IntegralQuartzJob {
 
     @Override
     public void run() {
+        System.out.println("Going to fail....");
         throw new RuntimeException("test");
     }
 

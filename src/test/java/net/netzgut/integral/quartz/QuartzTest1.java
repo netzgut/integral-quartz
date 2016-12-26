@@ -1,22 +1,23 @@
 package net.netzgut.integral.quartz;
 
+import org.apache.tapestry5.ioc.Registry;
 import org.apache.tapestry5.ioc.RegistryBuilder;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class QuartzTest1 {
 
-    public static void main(String[] args) {
-        //BasicConfigurator.configure();
-        System.out.println("starting basic test");
-        new QuartzTest1().start();
-    }
-
-    private synchronized void start() {
-
+    @Test(timeOut = 5 * 1000)
+    public void basicTest() throws InterruptedException {
         RegistryBuilder builder = new RegistryBuilder().add(QuartzTestModule1.class);
-        builder.build().performRegistryStartup();
-        System.out.println("registry started");
+        Registry registry = builder.build();
+        registry.performRegistryStartup();
 
-        System.out.println("done?");
+        Thread.sleep(2000);
+
+        Assert.assertTrue(TestJob1.RUN);
+        TestJob1.RUN = false;
+        registry.shutdown();
     }
 
 }
