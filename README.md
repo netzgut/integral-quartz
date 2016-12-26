@@ -29,7 +29,7 @@ Your job has to implement IntegralQuartzJob. IntegralQuartzJob is like a runnabl
 
 Contribute to QuartzSchedulerManager, use QuartzJobSchedulingBundleBuilder to build trigger and add to configuration:
 
-```
+```java
     @Contribute(QuartzSchedulerManager.class)
     public static void contributeQuartzSchedulerManager(OrderedConfiguration<JobSchedulingBundle> configuration) {
 
@@ -39,7 +39,8 @@ Contribute to QuartzSchedulerManager, use QuartzJobSchedulingBundleBuilder to bu
                                                .triggerSecondly(1) //
                                                .build(configuration);
 
-    }```
+    }
+```
 
 Quartz supports multiple triggers per Job. We currently only support one trigger per job.
 
@@ -49,7 +50,7 @@ Out of the box integral-quartz comes with an RAM-based scheduler with reasonable
 quartz in a clustered environemt i.e. with a database JobStore, contribute a service override for the SchedulerFactory
 service.
 
-```
+```java
     @Contribute(ServiceOverride.class)
     public static void contributeServiceOverride(@SuppressWarnings("rawtypes") MappedConfiguration<Class, Object> conf,
                                                  @Local SchedulerFactory schedulerFactory) {
