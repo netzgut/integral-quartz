@@ -37,7 +37,7 @@ project.ext.versions = [
     testng: '6.9.12'
 ]
 
-project.ext.moduleClasses = 'net.netzgut.integral.quartz.modules.QuartzModule'
+project.ext.moduleClasses = 'net.netzgut.integral.quartz.QuartzModule'
 
 dependencies {
     compile "org.slf4j:slf4j-api:${versions.slf4j}"
