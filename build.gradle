@@ -1,13 +1,3 @@
-group 'net.netzgut.integral'
-version '0.0.1-SNAPSHOT'
-
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'nebula.provided-base'
-
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
-
 buildscript {
     repositories {
         mavenCentral()
@@ -18,6 +8,24 @@ buildscript {
         classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:3.1.0'
     }
 }
+
+plugins {
+    id "com.github.hierynomus.license" version "0.13.1"
+}
+
+group 'net.netzgut.integral'
+version '0.0.1-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'nebula.provided-base'
+
+
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+
 
 repositories {
     mavenCentral()
@@ -114,6 +122,11 @@ artifacts {
 test {
     useTestNG()
 }
+license {
+    header rootProject.file('src/main/resources/META-INF/LICENSE.txt')
+    strictCheck true
+}
+
 uploadArchives {
     // We need to set the variables if not present
     ext.snapshot_repository = project.hasProperty('snapshot-repository') ? project.property('snapshot-repository') : ''
