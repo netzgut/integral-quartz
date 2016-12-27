@@ -87,7 +87,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Tapestry-Module-Classes>net.netzgut.integral.quartz.modules.QuartzModule</Tapestry-Module-Classes>
+              <Tapestry-Module-Classes>net.netzgut.integral.quartz.QuartzModule</Tapestry-Module-Classes>
             </manifestEntries>
           </archive>
         </configuration>
