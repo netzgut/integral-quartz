@@ -1,6 +1,6 @@
 # ∫ Integral Quartz
 
-Use th [Quartz scheduler](http://www.quartz-scheduler.org/) easily from Tapestry.
+Use the [Quartz scheduler](http://www.quartz-scheduler.org/) easily from Tapestry.
 
 ## Why?
 
@@ -105,9 +105,13 @@ So if you want to change a job, you have to change the jobKey or the triggerKey 
 
 ### Log4J, RequestResponse
 
- - TODO...
- - MDC.put("requestedUrl", jobClazz.getName());
- - MDC.clear();
+TODO: Documentation tasks:
+ - Explain possible Log4J configuration for Mapped Diagnostic Context (MDC)
+   - MDC.put("requestedUrl", jobClazz.getName());
+   - MDC.clear();
+ - Explain why Request and Response are not available and why tapestry may crash if services are being used that rely on
+   request or response availability. Clear design vs. Mocking
+   
 
 ## Gradle task uploadArchives
 
