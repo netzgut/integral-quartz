@@ -62,7 +62,7 @@ jar {
 }
 
 
-task wrapper(type: Wrapper) { gradleVersion = '3.2' }
+task wrapper(type: Wrapper) { gradleVersion = '3.3' }
 
 
 task pom {
@@ -70,10 +70,10 @@ task pom {
         pom {
             packaging = 'jar'
             project {
-                inceptionYear '2016'
+                inceptionYear '2017'
                 name rootProject.name
-                description 'A ReastEasy 3.0.19 replacement for org.tynamo.tapestry-resteasy'
-                url 'https://github.com/netzgut/integral-resteasy'
+                description 'A Quartz Scheduler integration for tapestry 5.4''
+                url 'https://github.com/netzgut/integral-quartz'
                 properties { 'project.build.sourceEncoding' 'UTF-8' }
                 licenses {
                     license {
@@ -83,9 +83,9 @@ task pom {
                     }
                 }
                 scm {
-                    url 'https://github.com/netzgut/integral-resteasy'
-                    connection 'scm:git:git://github.com/netzgut/integral-resteasy.git'
-                    developerConnection 'scm:git:git@github.com:netzgut/integral-resteasy.git'
+                    url 'https://github.com/netzgut/integral-quartz'
+                    connection 'scm:git:git://github.com/netzgut/integral-quartz.git'
+                    developerConnection 'scm:git:git@github.com:netzgut/integral-quartz.git'
                 }
             }
         }.withXml { xmlProvider ->

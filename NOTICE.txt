@@ -1,4 +1,2 @@
-This product is based on
-Tynamo Tapestry RestEasy (https://github.com/tynamo/tapestry-resteasy)
-by
-Tynamo (http://www.tynamo.org).
+This code is based on and inspired by
+Chenillekit Quartz (https://github.com/chenillekit/chenillekit/tree/master/chenillekit-quartz)
