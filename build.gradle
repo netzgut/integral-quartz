@@ -72,7 +72,7 @@ task pom {
             project {
                 inceptionYear '2017'
                 name rootProject.name
-                description 'A Quartz Scheduler integration for tapestry 5.4''
+                description 'A Quartz Scheduler integration for tapestry 5.4'
                 url 'https://github.com/netzgut/integral-quartz'
                 properties { 'project.build.sourceEncoding' 'UTF-8' }
                 licenses {
