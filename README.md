@@ -126,7 +126,8 @@ The fallbacks are empty strings, so you can build etc. without gradle failing in
 
 ## Contribute
 
-If you want to contribute feel free to open issues or provide pull requests. Please read the additional info in the folder `_CONTRIBUTE`.
+It's awesome that you want to contribute! Please see [this repository](https://github.com/netzgut/contribute)
+for more details.
 
 
 ## License
