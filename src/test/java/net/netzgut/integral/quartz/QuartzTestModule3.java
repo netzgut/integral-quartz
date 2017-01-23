@@ -28,16 +28,12 @@ import org.apache.tapestry5.ioc.annotations.Local;
 import org.apache.tapestry5.ioc.services.ServiceOverride;
 import org.quartz.SchedulerFactory;
 import org.quartz.utils.ConnectionProvider;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.netzgut.integral.quartz.builder.QuartzJobSchedulingBundleBuilder;
 import net.netzgut.integral.quartz.builder.QuartzSchedulerFactoryBuilder;
 
 @ImportModule(QuartzModule.class)
 public class QuartzTestModule3 {
-
-    private static final Logger log = LoggerFactory.getLogger(QuartzTestModule3.class);
 
     @Contribute(ServiceOverride.class)
     public static void contributeServiceOverride(@SuppressWarnings("rawtypes") MappedConfiguration<Class, Object> conf,
