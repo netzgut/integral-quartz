@@ -62,7 +62,7 @@ jar {
 }
 
 
-task wrapper(type: Wrapper) { gradleVersion = '3.3' }
+task wrapper(type: Wrapper) { gradleVersion = '3.4.1' }
 
 
 task pom {
