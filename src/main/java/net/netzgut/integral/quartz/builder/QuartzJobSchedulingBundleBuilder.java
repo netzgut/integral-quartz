@@ -16,6 +16,8 @@
 package net.netzgut.integral.quartz.builder;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -37,6 +39,7 @@ public class QuartzJobSchedulingBundleBuilder {
     private Supplier<Trigger>                     triggerBuilder;
     private Date                                  triggerStartDate = new Date();
     private BiFunction<Trigger, Trigger, Boolean> triggerComparator;
+    private final Map<String, Object>             jobData          = new HashMap<>();
 
     public QuartzJobSchedulingBundleBuilder() {
         super();
@@ -45,6 +48,11 @@ public class QuartzJobSchedulingBundleBuilder {
 
     public QuartzJobSchedulingBundleBuilder jobClass(Class<? extends IntegralQuartzJob> jobClass) {
         this.jobClass = jobClass;
+        return this;
+    }
+
+    public QuartzJobSchedulingBundleBuilder jobData(String key, Object value) {
+        this.jobData.put(key, value);
         return this;
     }
 
@@ -67,26 +75,24 @@ public class QuartzJobSchedulingBundleBuilder {
     }
 
     public QuartzJobSchedulingBundleBuilder triggerMinutely(int minutes) {
-        this.triggerBuilder = () -> TriggerBuilder.newTrigger() //
-                                                  .withIdentity(buildIdentity(this.jobClass,
-                                                                              "triggerMinutely",
-                                                                              minutes))
-                                                  .startAt(this.triggerStartDate) //
-                                                  .withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(minutes)
-                                                                                     .withMisfireHandlingInstructionFireNow())
-                                                  .build();
+        this.triggerBuilder =
+            () -> TriggerBuilder.newTrigger() //
+                                .withIdentity(buildIdentity(this.jobClass, "triggerMinutely", minutes))
+                                .startAt(this.triggerStartDate) //
+                                .withSchedule(SimpleScheduleBuilder.repeatMinutelyForever(minutes)
+                                                                   .withMisfireHandlingInstructionFireNow())
+                                .build();
         return this;
     }
 
     public QuartzJobSchedulingBundleBuilder triggerSecondly(int seconds) {
-        this.triggerBuilder = () -> TriggerBuilder.newTrigger() //
-                                                  .withIdentity(buildIdentity(this.jobClass,
-                                                                              "triggerSecondly",
-                                                                              seconds))
-                                                  .startAt(this.triggerStartDate) //
-                                                  .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(seconds)
-                                                                                     .withMisfireHandlingInstructionFireNow())
-                                                  .build();
+        this.triggerBuilder =
+            () -> TriggerBuilder.newTrigger() //
+                                .withIdentity(buildIdentity(this.jobClass, "triggerSecondly", seconds))
+                                .startAt(this.triggerStartDate) //
+                                .withSchedule(SimpleScheduleBuilder.repeatSecondlyForever(seconds)
+                                                                   .withMisfireHandlingInstructionFireNow())
+                                .build();
         return this;
     }
 
@@ -97,6 +103,13 @@ public class QuartzJobSchedulingBundleBuilder {
             return trigger;
         };
 
+        return this;
+    }
+
+    public QuartzJobSchedulingBundleBuilder triggerOnce(Date triggerDate) {
+        this.triggerBuilder = () -> TriggerBuilder.newTrigger() //
+                                                  .startAt(triggerDate) //
+                                                  .build();
         return this;
     }
 
