@@ -59,11 +59,11 @@ public class IntegralQuartzJobExecutor implements Job {
             log.debug("autobuilding job clazz '{}'", jobClazz);
 
             // Inform the others that we are actually in a Quartz job so they can change their behaviour if needed
-            IntegralQuartzJob autobuild = objectLocator.autobuild(jobClazz);
+            IntegralQuartzJob job = objectLocator.autobuild(jobClazz);
 
             // run the job
             log.debug("executing job: '{}'", jobClazz);
-            autobuild.run();
+            job.execute(context);
         }
         catch (Exception ex) {
             log.warn("an error occured executing job " + jobClazz + ": " + ex, ex);
