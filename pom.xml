@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.netzgut.integral</groupId>
   <artifactId>integral-quartz</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>integral-quartz</name>
   <description>A Quartz Scheduler integration for tapestry 5.4</description>
   <url>https://github.com/netzgut/integral-quartz</url>
@@ -27,7 +27,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.24</version>
+      <version>1.7.25</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -51,7 +51,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.24</version>
+      <version>1.7.25</version>
       <scope>test</scope>
     </dependency>
     <dependency>
