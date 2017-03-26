@@ -29,7 +29,7 @@
 
 package net.netzgut.integral.quartz;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.apache.tapestry5.ioc.ObjectLocator;
 import org.apache.tapestry5.ioc.ScopeConstants;
@@ -43,8 +43,8 @@ import org.quartz.SchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.netzgut.integral.internal.quartz.IntegralQuartzJobContextImpl;
-import net.netzgut.integral.internal.quartz.QuartzSchedulerManagerImpl;
+import net.netzgut.integral.internal.quartz.IntegralQuartzJobContextImplementation;
+import net.netzgut.integral.internal.quartz.QuartzSchedulerManagerImplementation;
 import net.netzgut.integral.quartz.builder.QuartzSchedulerFactoryBuilder;
 
 public class QuartzModule {
@@ -59,16 +59,16 @@ public class QuartzModule {
     }
 
     @EagerLoad
-    public QuartzSchedulerManager buildQuartzSchedulerManager(final SchedulerFactory schedulerFactory,
-                                                              final List<JobSchedulingBundle> jobSchedulingBundles,
-                                                              final ObjectLocator objectLocator) {
-        return new QuartzSchedulerManagerImpl(schedulerFactory, jobSchedulingBundles, objectLocator);
+    public QuartzSchedulerManager buildQuartzSchedulerManager(SchedulerFactory schedulerFactory,
+                                                              Collection<JobSchedulingBundle> jobSchedulingBundles,
+                                                              ObjectLocator objectLocator) {
+        return new QuartzSchedulerManagerImplementation(jobSchedulingBundles, schedulerFactory, objectLocator);
     }
 
     @Scope(ScopeConstants.PERTHREAD)
     public IntegralQuartzJobContext buildIntegralQuartzJobContext() {
         log.debug("building new IntegralQuartzJobContext");
-        return new IntegralQuartzJobContextImpl();
+        return new IntegralQuartzJobContextImplementation();
     }
 
     /**
@@ -80,7 +80,7 @@ public class QuartzModule {
     public static void onRegistryShutdownKillSchedulers(SchedulerFactory factory, RegistryShutdownHub shutdownHub) {
         shutdownHub.addRegistryWillShutdownListener(() -> {
             try {
-                factory.getAllSchedulers().iterator().forEachRemaining(QuartzModule::shutdownScheduler);
+                factory.getAllSchedulers().forEach(QuartzModule::shutdownScheduler);
             }
             catch (SchedulerException e) {
                 throw new RuntimeException("This will never ever happen.");

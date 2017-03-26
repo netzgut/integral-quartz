@@ -18,14 +18,14 @@ package net.netzgut.integral.internal.quartz;
 import net.netzgut.integral.quartz.IntegralQuartzJob;
 import net.netzgut.integral.quartz.IntegralQuartzJobContext;
 
-public class IntegralQuartzJobContextImpl implements IntegralQuartzJobContext {
+public class IntegralQuartzJobContextImplementation implements IntegralQuartzJobContext {
 
     /**
      * when running inside quartz job, this is set to the current job class
      */
     private Class<IntegralQuartzJob> currentJobClazz = null;
 
-    public IntegralQuartzJobContextImpl() {
+    public IntegralQuartzJobContextImplementation() {
         super();
     }
 

@@ -29,11 +29,14 @@ public class IntegralQuartzSchedulingBundle implements JobSchedulingBundle {
     private final Class<? extends IntegralQuartzJob>    job;
     private final Trigger                               trigger;
     private final BiFunction<Trigger, Trigger, Boolean> triggerComparator;
+    private final String                                jobName;
 
     public IntegralQuartzSchedulingBundle(Class<? extends IntegralQuartzJob> job,
+                                          String jobName,
                                           Trigger trigger,
                                           BiFunction<Trigger, Trigger, Boolean> triggerComparator) {
         this.job = job;
+        this.jobName = jobName == null ? job.getName() : jobName;
         this.trigger = trigger;
         this.triggerComparator = triggerComparator;
     }
@@ -45,9 +48,10 @@ public class IntegralQuartzSchedulingBundle implements JobSchedulingBundle {
 
     @Override
     public JobDetail getJobDetail() {
-        String jobName = this.job.getName();
-        JobDetail jobDetail = JobBuilder.newJob(IntegralQuartzJobExecutor.class).withIdentity(jobName).build();
-        jobDetail.getJobDataMap().put(InternalQuartzConstants.JOB_CLAZZNAME_DATAMAP_KEY, jobName);
+        JobDetail jobDetail = JobBuilder.newJob(IntegralQuartzJobExecutor.class) //
+                                        .withIdentity(this.jobName) //
+                                        .build();
+        jobDetail.getJobDataMap().put(InternalQuartzConstants.JOB_CLAZZNAME_DATAMAP_KEY, this.job.getName());
         return jobDetail;
     }
 

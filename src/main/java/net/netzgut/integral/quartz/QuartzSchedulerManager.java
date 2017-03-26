@@ -15,8 +15,10 @@
  */
 package net.netzgut.integral.quartz;
 
+import org.apache.tapestry5.ioc.annotations.UsesConfiguration;
 import org.quartz.Scheduler;
 
+@UsesConfiguration(JobSchedulingBundle.class)
 public interface QuartzSchedulerManager {
 
     Scheduler getScheduler();

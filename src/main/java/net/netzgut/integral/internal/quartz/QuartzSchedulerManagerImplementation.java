@@ -38,42 +38,37 @@ import net.netzgut.integral.quartz.JobSchedulingBundle;
 import net.netzgut.integral.quartz.QuartzSchedulerManager;
 import net.netzgut.integral.quartz.listener.AbstractTriggerListener;
 
-public class QuartzSchedulerManagerImpl implements QuartzSchedulerManager {
+public class QuartzSchedulerManagerImplementation implements QuartzSchedulerManager {
 
-    private static final Logger    log = LoggerFactory.getLogger(QuartzSchedulerManagerImpl.class);
+    private static final Logger    log = LoggerFactory.getLogger(QuartzSchedulerManagerImplementation.class);
 
     private final SchedulerFactory schedulerFactory;
 
-    public QuartzSchedulerManagerImpl(SchedulerFactory schedulerFactory,
-                                      Collection<JobSchedulingBundle> jobSchedulingBundles,
-                                      final ObjectLocator objectLocator) {
+    public QuartzSchedulerManagerImplementation(Collection<JobSchedulingBundle> jobSchedulingBundles,
+                                                SchedulerFactory schedulerFactory,
+                                                ObjectLocator objectLocator) {
         this.schedulerFactory = schedulerFactory;
 
         try {
             // get all existing jobs
-            Set<JobKey> existingJobs = getScheduler().getJobKeys(GroupMatcher.jobGroupStartsWith(""));
+            Set<JobKey> existing = getScheduler().getJobKeys(GroupMatcher.jobGroupStartsWith(""));
 
-            // formatter: off
-            Set<JobKey> incomingJobKeys =
-                jobSchedulingBundles
-                    .stream()
-                    .map(JobSchedulingBundle::getJobDetail)
-                    .map(JobDetail::getKey)
-                    .collect(Collectors.toSet());
+            Set<JobKey> incoming = jobSchedulingBundles.stream() //
+                                                       .map(JobSchedulingBundle::getJobDetail) //
+                                                       .map(JobDetail::getKey) //
+                                                       .collect(Collectors.toSet()); //
 
             // remove jobs from scheduler that are not in new jobScheduling bundle!
-            existingJobs
-                .stream()
-                .filter(jobKey -> incomingJobKeys.contains(jobKey) == false)
-                .forEach(jobKey -> SchedulerUtils.deleteJobQuietly(getScheduler(), jobKey));
-            // formatter: on
+            existing.stream() //
+                    .filter(jobKey -> incoming.contains(jobKey) == false) //
+                    .forEach(jobKey -> SchedulerUtils.deleteJobQuietly(getScheduler(), jobKey));
 
             // replace different and add new jobs
 
             for (JobSchedulingBundle bundle : jobSchedulingBundles) {
 
                 boolean found = false;
-                for (JobKey jobKey : existingJobs) {
+                for (JobKey jobKey : existing) {
                     if (jobKey.equals(bundle.getJobDetail().getKey())) {
                         found = true;
 
@@ -111,7 +106,6 @@ public class QuartzSchedulerManagerImpl implements QuartzSchedulerManager {
                           });
 
             getScheduler().start();
-
         }
         catch (SchedulerException e) {
             throw new RuntimeException(e);
@@ -144,7 +138,6 @@ public class QuartzSchedulerManagerImpl implements QuartzSchedulerManager {
         String jobName = jobDetail.getKey().getName();
 
         if (trigger != null) {
-
             if (log.isInfoEnabled()) {
                 String triggerName = trigger.getKey().getName();
                 if (trigger instanceof CronTrigger) {

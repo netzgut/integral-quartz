@@ -39,6 +39,7 @@ public class QuartzJobSchedulingBundleBuilder {
     private Supplier<Trigger>                     triggerBuilder;
     private Date                                  triggerStartDate = new Date();
     private BiFunction<Trigger, Trigger, Boolean> triggerComparator;
+    private String                                jobName;
     private final Map<String, Object>             jobData          = new HashMap<>();
 
     public QuartzJobSchedulingBundleBuilder() {
@@ -53,6 +54,11 @@ public class QuartzJobSchedulingBundleBuilder {
 
     public QuartzJobSchedulingBundleBuilder jobData(String key, Object value) {
         this.jobData.put(key, value);
+        return this;
+    }
+
+    public QuartzJobSchedulingBundleBuilder jobName(String jobName) {
+        this.jobName = jobName;
         return this;
     }
 
@@ -142,10 +148,10 @@ public class QuartzJobSchedulingBundleBuilder {
             throw new RuntimeException("Missing trigger when building "
                                        + IntegralQuartzSchedulingBundle.class.getName());
         }
-        configuration.add(this.jobClass.getName(),
-                          new IntegralQuartzSchedulingBundle(this.jobClass,
-                                                             this.triggerBuilder.get(),
-                                                             this.triggerComparator));
+        configuration.add(this.jobClass.getName(), new IntegralQuartzSchedulingBundle(this.jobClass,
+                                                                                      this.jobName,
+                                                                                      this.triggerBuilder.get(),
+                                                                                      this.triggerComparator));
     }
 
     private String buildIdentity(Class<? extends IntegralQuartzJob> jobClass, String type, int value) {
