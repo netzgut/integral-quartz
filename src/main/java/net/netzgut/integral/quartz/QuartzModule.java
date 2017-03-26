@@ -29,7 +29,7 @@
 
 package net.netzgut.integral.quartz;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.tapestry5.ioc.ObjectLocator;
 import org.apache.tapestry5.ioc.ScopeConstants;
@@ -60,7 +60,7 @@ public class QuartzModule {
 
     @EagerLoad
     public QuartzSchedulerManager buildQuartzSchedulerManager(SchedulerFactory schedulerFactory,
-                                                              Collection<JobSchedulingBundle> jobSchedulingBundles,
+                                                              List<JobSchedulingBundle> jobSchedulingBundles,
                                                               ObjectLocator objectLocator) {
         return new QuartzSchedulerManagerImplementation(jobSchedulingBundles, schedulerFactory, objectLocator);
     }
