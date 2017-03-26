@@ -21,7 +21,7 @@ repositories {
 }
 
 project.ext.versions = [
-    slf4j: '1.7.24',
+    slf4j: '1.7.25',
     tapestry: '5.4.1',
     quartz: '2.2.1',
     // provided
@@ -29,7 +29,7 @@ project.ext.versions = [
     // test
     log4j: '1.2.17',
     hsqldb: '2.3.4',
-    testng: '6.9.12'
+    testng: '6.11'
 ]
 
 project.ext.moduleClasses = 'net.netzgut.integral.quartz.QuartzModule'
