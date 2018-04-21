@@ -66,7 +66,7 @@ public class IntegralQuartzJobExecutor implements Job {
             job.execute(context);
         }
         catch (Exception ex) {
-            log.error("an error occured executing job " + jobClazz + ": " + ex, ex);
+            log.error("an error occured executing job '{}'", jobClazz, ex);
             throw new JobExecutionException(ex);
         }
         finally {

@@ -40,10 +40,7 @@ public class SchedulerUtils {
             scheduler.deleteJob(jobKey);
         }
         catch (SchedulerException e) {
-            log.debug(String.format("Couldn't delete Job '%s' on Scheduler '%s'",
-                                    jobKey.toString(),
-                                    scheduler.toString()),
-                      e);
+            log.debug("Couldn't delete Job '{}' on Scheduler '{}'", jobKey.toString(), scheduler.toString(), e);
         }
     }
 
