@@ -21,7 +21,7 @@ repositories {
 
 project.ext.versions = [
     slf4j: '1.7.25',
-    tapestry: '5.4.1',
+    tapestry: '5.4.3',
     quartz: '2.2.1',
     // provided
     servlet: '2.5',
